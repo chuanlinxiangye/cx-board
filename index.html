@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f2f4f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0f13" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="未完成">
@@ -14,13 +14,15 @@
   :root{
     --bg:#f2f4f7; --card:#fff; --text:#15181d; --muted:#6b7280; --line:#e5e7eb;
     --accent:#2563eb; --over:#dc2626; --today:#ea580c; --d3:#b45309; --d7:#2563eb; --later:#6b7280;
-    --chip:#f3f4f6; --shadow:0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08);
+    --chip:#f3f4f6; --ok:#16a34a;
+    --shadow:0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08);
   }
   @media (prefers-color-scheme: dark){
     :root{
       --bg:#0d0f13; --card:#171a21; --text:#e8eaf0; --muted:#8f98a8; --line:#242833;
       --accent:#60a5fa; --over:#f87171; --today:#fb923c; --d3:#fbbf24; --d7:#60a5fa; --later:#94a3b8;
-      --chip:#1e222b; --shadow:0 1px 2px rgba(0,0,0,.4);
+      --chip:#1e222b; --ok:#4ade80;
+      --shadow:0 1px 2px rgba(0,0,0,.4);
     }
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -33,26 +35,30 @@
   }
   .wrap{max-width:640px;margin:0 auto;padding:18px 16px 40px}
 
-  header{padding:8px 2px 14px}
-  .h1{font-size:26px;font-weight:650;letter-spacing:-.02em;margin:0;display:flex;align-items:baseline;gap:8px}
-  .h1 small{font-size:15px;font-weight:400;color:var(--muted)}
-  .bar{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13px;color:var(--muted)}
-  .bar .dot{width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.5}
+  header{padding:8px 2px 10px}
+  .h1{font-size:26px;font-weight:650;letter-spacing:-.02em;margin:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .h1 small{font-size:14px;font-weight:400;color:var(--muted)}
+  .bar2{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13px;color:var(--muted)}
+  .bar2 .dot{width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.5}
   button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
   .refresh{color:var(--accent);font-size:13px;padding:4px 2px;font-weight:500}
   .refresh:active{opacity:.5}
 
-  h2{
-    font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--muted);
-    margin:22px 2px 8px;display:flex;align-items:center;gap:8px;text-transform:none;
-  }
-  h2 .n{color:var(--muted);font-weight:400}
-  h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  .band{border-radius:14px;padding:13px 14px 12px;margin:12px 0 2px;font-size:14px;line-height:1.55}
+  .band .t{font-weight:650;margin-bottom:3px}
+  .band .d{opacity:.88;font-size:13px}
+  .band.hot{background:rgba(220,38,38,.10);color:var(--over);border:1px solid rgba(220,38,38,.28)}
+  .band.warn{background:rgba(234,88,12,.10);color:var(--today);border:1px solid rgba(234,88,12,.28)}
 
-  .item{
-    background:var(--card);border-radius:14px;padding:14px 14px 12px;margin-bottom:10px;
-    box-shadow:var(--shadow);border:1px solid transparent;position:relative;overflow:hidden;
+  h2{
+    font-size:13px;font-weight:600;color:var(--muted);
+    margin:24px 2px 8px;display:flex;align-items:center;gap:8px;
   }
+  h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  h2 .n{font-weight:400;font-size:12px;white-space:nowrap}
+
+  .item{background:var(--card);border-radius:14px;padding:14px 14px 12px;margin-bottom:10px;
+    box-shadow:var(--shadow);position:relative;overflow:hidden}
   .item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
   .g-over .item::before{background:var(--over)}
   .g-today .item::before{background:var(--today)}
@@ -60,7 +66,7 @@
   .g-d7 .item::before{background:var(--d7)}
   .g-later .item::before{background:var(--later)}
 
-  .course{font-size:12px;color:var(--muted);margin:0 0 3px;letter-spacing:.01em}
+  .course{font-size:12px;color:var(--muted);margin:0 0 3px}
   .title{font-size:16px;font-weight:550;line-height:1.4;margin:0;word-break:break-word}
   .foot{display:flex;align-items:center;gap:10px;margin-top:9px;flex-wrap:wrap}
   .due{font-size:13px;font-weight:550;font-variant-numeric:tabular-nums}
@@ -71,22 +77,62 @@
   .mute{font-size:12px;color:var(--muted);padding:5px 8px;border-radius:8px;background:var(--chip)}
   .mute:active{opacity:.6}
 
-  .hidden-sec{margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
+  .setting{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);
+    background:var(--card);border-radius:12px;padding:10px 12px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .setting input{width:64px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);
+    background:var(--bg);color:var(--text);font:inherit;font-size:14px;text-align:center;
+    font-variant-numeric:tabular-nums}
+  .setting .sp{flex:1}
+  .setting .hint{font-size:12px;color:var(--muted)}
+
+  .cc{background:var(--card);border-radius:14px;margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden}
+  .cc-h{padding:13px 14px 10px;display:flex;align-items:flex-start;gap:10px}
+  .cc-h .nm{font-size:15px;font-weight:600;line-height:1.35;flex:1;word-break:break-word}
+  .cc-h .rt{font-size:12.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;padding-top:2px}
+  .cc-h .rt b{font-weight:650;color:var(--text)}
+  .cc-h .rt.hot b{color:var(--over)}
+  .cc-h .rt.warn b{color:var(--today)}
+  .prog{height:4px;background:var(--line);margin:0 14px 2px;border-radius:2px;overflow:hidden}
+  .prog i{display:block;height:100%;background:var(--ok);border-radius:2px}
+  .cc-f{padding:7px 14px 12px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .cc-f .sp{flex:1}
+  .cc-f button{font-size:12px;color:var(--accent)}
+
+  .chlist{display:none;border-top:1px solid var(--line)}
+  .cc.open .chlist{display:block}
+  .ch{display:flex;align-items:center;gap:9px;padding:9px 14px;font-size:13px;
+    border-bottom:1px solid var(--line);cursor:pointer}
+  .ch:last-child{border-bottom:0}
+  .ch:active{background:var(--chip)}
+  .ch input{-webkit-appearance:none;appearance:none;width:20px;height:20px;flex:0 0 20px;
+    border:1.5px solid var(--line);border-radius:50%;margin:0;position:relative;background:transparent}
+  .ch input:checked{background:var(--ok);border-color:var(--ok)}
+  .ch input:checked::after{content:"";position:absolute;left:5.5px;top:2.5px;width:5px;height:9px;
+    border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+  .ch .num{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;flex:0 0 auto;min-width:40px}
+  .ch .nm2{flex:1;line-height:1.35;word-break:break-word}
+  .ch .mn{color:var(--muted);font-size:12px;flex:0 0 auto;font-variant-numeric:tabular-nums}
+  .ch.done .nm2,.ch.done .num,.ch.done .mn{opacity:.4;text-decoration:line-through}
+  .ch a{color:var(--accent);font-size:12px;text-decoration:none;padding:2px 0 2px 4px;flex:0 0 auto}
+
+  .hidden-sec{margin-top:22px;border-top:1px solid var(--line);padding-top:14px}
   .hidden-sec summary{font-size:13px;color:var(--muted);cursor:pointer;list-style:none}
   .hidden-sec summary::-webkit-details-marker{display:none}
   .hidden-sec summary::before{content:"▸ ";display:inline-block;transition:transform .15s}
   .hidden-sec[open] summary::before{transform:rotate(90deg)}
   .hidden-sec .item{opacity:.55;box-shadow:none;background:transparent;border:1px dashed var(--line);margin-top:10px}
 
-  .empty{text-align:center;padding:56px 20px;color:var(--muted)}
-  .empty .big{font-size:40px;line-height:1;margin-bottom:12px;opacity:.5}
+  .empty{text-align:center;padding:48px 20px;color:var(--muted)}
+  .empty .big{font-size:38px;line-height:1;margin-bottom:10px;opacity:.45}
   .empty p{margin:6px 0;font-size:14px}
 
   .card{background:var(--card);border-radius:14px;padding:20px;box-shadow:var(--shadow);margin-top:16px}
   .card h3{margin:0 0 10px;font-size:16px}
   .card p{margin:0 0 12px;font-size:14px;color:var(--muted);line-height:1.6}
-  .card input{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;font-size:14px}
-  .card .btn{margin-top:10px;width:100%;padding:12px;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;font-size:15px}
+  .card input.kin{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);
+    background:var(--bg);color:var(--text);font:inherit;font-size:14px}
+  .card .btn{margin-top:10px;width:100%;padding:12px;border-radius:10px;background:var(--accent);
+    color:#fff;font-weight:600;font-size:15px;text-align:center}
   .card .btn:active{opacity:.8}
   .err{color:var(--over);font-size:13px;margin-top:10px;white-space:pre-wrap;word-break:break-word}
   footer{margin-top:30px;text-align:center;font-size:12px;color:var(--muted);line-height:1.7}
@@ -99,12 +145,13 @@
 <div class="wrap">
   <header>
     <div class="h1">未完成 <small id="cnt"></small></div>
-    <div class="bar">
+    <div class="bar2">
       <span id="at">读取中…</span>
       <span class="dot"></span>
       <button class="refresh" id="rf">刷新</button>
     </div>
   </header>
+  <div id="band"></div>
   <main id="list">
     <div class="skel"></div><div class="skel"></div><div class="skel"></div>
   </main>
@@ -116,14 +163,18 @@
   'use strict';
 
   var LS_IGNORE = 'cx_ignore_v2';
+  var LS_DONE = 'cx_done_v1';
+  var LS_DAILY = 'cx_daily_v1';
   var LS_KEY = 'cx_board_key';
+  var DEFAULT_DAILY = 120;
+  var AHEAD_DAYS = 4;
 
   var $list = document.getElementById('list');
+  var $band = document.getElementById('band');
   var $cnt = document.getElementById('cnt');
   var $at = document.getElementById('at');
   var $foot = document.getElementById('foot');
 
-  /* ---------- 密钥 ---------- */
   function b64urlToBytes(s) {
     var t = String(s).replace(/-/g, '+').replace(/_/g, '/');
     while (t.length % 4) t += '=';
@@ -138,20 +189,16 @@
     for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
     return out;
   }
-
   function readKeyFromHash() {
-    var h = location.hash || '';
-    var m = h.match(/[#&]k=([A-Za-z0-9_-]{20,})/);
+    var m = (location.hash || '').match(/[#&]k=([A-Za-z0-9_-]{20,})/);
     return m ? m[1] : '';
   }
-
   function getKey() {
     var k = readKeyFromHash();
     if (k) { try { localStorage.setItem(LS_KEY, k); } catch (e) {} return k; }
     try { return localStorage.getItem(LS_KEY) || ''; } catch (e) { return ''; }
   }
 
-  /* ---------- 解密 ---------- */
   async function decrypt(keyStr, text) {
     if (!window.crypto || !window.crypto.subtle) {
       throw new Error('这个页面必须用 https 打开，file:// 本地双击不行');
@@ -161,13 +208,12 @@
     var key = await crypto.subtle.importKey('raw', keyBytes, { name: 'AES-GCM' }, false, ['decrypt']);
     var parts = String(text).trim().split('.');
     if (parts.length !== 2) throw new Error('数据文件格式不对');
-    var iv = b64ToBytes(parts[0]);
-    var ct = b64ToBytes(parts[1]);
-    var pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ct);
+    var pt = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: b64ToBytes(parts[0]) }, key, b64ToBytes(parts[1])
+    );
     return JSON.parse(new TextDecoder().decode(pt));
   }
 
-  /* ---------- 时间 ---------- */
   function parseEnd(s) {
     if (!s) return null;
     var m = String(s).match(/(\d{4})-(\d{1,2})-(\d{1,2})[ T](\d{1,2}):(\d{2})/);
@@ -197,25 +243,35 @@
   function startOfToday(now) {
     return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   }
-
-  /* ---------- 忽略清单 ---------- */
-  function loadIgnore() {
-    try { return JSON.parse(localStorage.getItem(LS_IGNORE) || '{}') || {}; } catch (e) { return {}; }
+  function daysLeftTo(end, now) {
+    if (!end) return null;
+    return Math.ceil((end.getTime() - now.getTime()) / 86400000);
   }
-  function saveIgnore(o) {
-    try { localStorage.setItem(LS_IGNORE, JSON.stringify(o)); } catch (e) {}
+
+  function loadJSON(k, d) {
+    try { return JSON.parse(localStorage.getItem(k) || '') || d; } catch (e) { return d; }
+  }
+  function saveJSON(k, o) {
+    try { localStorage.setItem(k, JSON.stringify(o)); } catch (e) {}
+  }
+  function dailyMinutes() {
+    var v = Number(localStorage.getItem(LS_DAILY));
+    return v > 0 ? v : DEFAULT_DAILY;
   }
   function idOf(w) { return (w.c || '') + '|' + (w.t || ''); }
+  function chId(ch) { return (ch.c || '') + '|' + (ch.n || ''); }
 
-  /* ---------- 渲染 ---------- */
-  var STATE = { data: null };
+  var STATE = { data: null, open: {}, daily: DEFAULT_DAILY };
 
-  function render() {
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function renderWorks(now) {
     var data = STATE.data;
-    if (!data) return;
-
-    var now = new Date();
-    var ignore = loadIgnore();
+    var ignore = loadJSON(LS_IGNORE, {});
     var works = (data.works || []).filter(function (w) { return !ignore[idOf(w)]; });
 
     var groups = [
@@ -254,22 +310,15 @@
     groups.forEach(function (g) {
       if (!g.items.length) return;
       total += g.items.length;
-      html += '<h2 class="g-' + g.key + '">' + g.title + ' <span class="n">' + g.items.length + '</span></h2>';
+      html += '<h2 class="g-' + g.key + '">' + g.title + '<span class="n">' + g.items.length + '</span></h2>';
       html += '<section class="g-' + g.key + '">';
-      g.items.forEach(function (it) { html += itemHtml(it, now); });
+      g.items.forEach(function (it) { html += workHtml(it, now); });
       html += '</section>';
     });
 
-    if (!total) {
-      html = '<div class="empty"><div class="big">✓</div>' +
-             '<p>没有未完成的了</p>' +
-             '<p style="font-size:13px">有新的会出现在这里</p></div>';
-    }
-
-    // 已标为不计分的
     var hidden = (data.works || []).filter(function (w) { return ignore[idOf(w)]; });
     if (hidden.length) {
-      html += '<details class="hidden-sec"><summary>已标为不计分（' + hidden.length + '）</summary>';
+      html += '<details class="hidden-sec"><summary>已标为不计分的作业（' + hidden.length + '）</summary>';
       hidden.forEach(function (w) {
         html += '<article class="item"><p class="course">' + esc(w.c || '') + '</p>' +
                 '<p class="title">' + esc(w.t || '') + '</p>' +
@@ -278,25 +327,12 @@
       });
       html += '</details>';
     }
-
-    $list.innerHTML = html;
-    $cnt.textContent = total ? total + ' 项' : '';
-
-    var at = data.at ? new Date(data.at) : null;
-    $at.textContent = at && !isNaN(at) ? '更新于 ' + fmtAt(at) : '已更新';
-    document.title = total ? '未完成 ' + total : '没有未完成';
+    return { html: html, total: total };
   }
 
-  function esc(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
-
-  function itemHtml(it, now) {
+  function workHtml(it, now) {
     var w = it.w;
     var due = it.end ? remain(it.end, now) + '　·　' + w.e : (w.e || '');
-    var id = idOf(w);
     return '<article class="item">' +
       '<p class="course">' + esc(w.c || '') + '</p>' +
       '<p class="title">' + esc(w.t || '') + '</p>' +
@@ -304,29 +340,207 @@
         '<span class="due">' + esc(due) + '</span>' +
         '<span class="sep"></span>' +
         (w.u ? '<a class="go" href="' + esc(w.u) + '" target="_blank" rel="noopener">打开 ›</a>' : '') +
-        '<button class="mute" data-ignore="' + esc(id) + '">不计分</button>' +
+        '<button class="mute" data-ignore="' + esc(idOf(w)) + '">不计分</button>' +
       '</div></article>';
   }
 
+  function chapterModel(now) {
+    var data = STATE.data;
+    var chapters = data.chapters || [];
+    var done = loadJSON(LS_DONE, {});
+    var daily = dailyMinutes();
+    var ignore = loadJSON(LS_IGNORE, {});
+
+    var nextDue = {};
+    (data.works || []).forEach(function (w) {
+      if (ignore[idOf(w)]) return;
+      var e = parseEnd(w.e);
+      if (!e || e.getTime() < now.getTime()) return;
+      var c = w.c;
+      if (!nextDue[c] || e < nextDue[c]) nextDue[c] = e;
+    });
+
+    var map = {};
+    chapters.forEach(function (ch) {
+      var c = ch.c || '未分类';
+      if (!map[c]) map[c] = { name: c, total: 0, left: 0, list: [] };
+      var m = Number(ch.m) || 0;
+      map[c].total += m;
+      var k = chId(ch);
+      var isDone = !!done[k];
+      if (!isDone) map[c].left += m;
+      map[c].list.push({ ch: ch, done: isDone, min: m });
+    });
+
+    var courses = Object.keys(map).map(function (k) {
+      var c = map[k];
+      c.list.sort(function (a, b) {
+        return String(a.ch.n).localeCompare(String(b.ch.n), undefined, { numeric: true });
+      });
+      c.due = nextDue[c.name] || null;
+      c.daysLeft = daysLeftTo(c.due, now);
+      c.needDays = c.left > 0 ? Math.ceil(c.left / daily) : 0;
+      c.level = '';
+      if (c.left > 0 && c.daysLeft !== null && c.daysLeft >= 0) {
+        if (c.needDays > c.daysLeft) c.level = 'hot';
+        else if (c.needDays > c.daysLeft - AHEAD_DAYS) c.level = 'warn';
+      }
+      return c;
+    });
+    courses.sort(function (a, b) { return b.left - a.left; });
+    return { courses: courses, daily: daily };
+  }
+
+  function renderChapters(now) {
+    var data = STATE.data;
+    var chapters = data.chapters || [];
+    if (!chapters.length) return { html: '', warn: [], leftAll: 0, daily: dailyMinutes() };
+
+    var model = chapterModel(now);
+    var courses = model.courses;
+    var leftAll = 0;
+    var totalAll = 0;
+    courses.forEach(function (c) { leftAll += c.left; totalAll += c.total; });
+
+    var html = '<h2>章节<span class="n">剩 ' + leftAll + ' / 共 ' + totalAll + ' 分钟</span></h2>';
+    html += '<div class="setting">每天可投入' +
+      '<input id="daily" type="number" min="10" max="720" step="10" value="' + model.daily + '">分钟' +
+      '<span class="sp"></span><span class="hint">改完自动生效</span></div>';
+
+    courses.forEach(function (c) {
+      if (!c.list.length) return;
+      var pct = c.total ? Math.round(((c.total - c.left) / c.total) * 100) : 0;
+      var open = !!STATE.open[c.name] || c.level === 'hot';
+      var doneCount = c.list.filter(function (x) { return x.done; }).length;
+
+      var sub;
+      if (c.left > 0) {
+        sub = '剩 <b>' + c.left + '</b> 分钟 · 要 ' + c.needDays + ' 天' +
+          (c.daysLeft !== null && c.daysLeft >= 0 ? ' · 截止还有 ' + c.daysLeft + ' 天' : '');
+      } else {
+        sub = '全勾完了';
+      }
+
+      html += '<article class="cc' + (open ? ' open' : '') + '" data-course="' + esc(c.name) + '">';
+      html += '<div class="cc-h"><div class="nm">' + esc(c.name) + '</div>' +
+              '<div class="rt ' + (c.level || '') + '">' + sub + '</div></div>';
+      html += '<div class="prog"><i style="width:' + pct + '%"></i></div>';
+      html += '<div class="cc-f"><span>' + doneCount + ' / ' + c.list.length + ' 章</span>' +
+              '<span class="sp"></span>' +
+              '<button data-toggle="' + esc(c.name) + '">' + (open ? '收起' : '展开') + '</button></div>';
+      html += '<div class="chlist">';
+      c.list.forEach(function (x) {
+        var k = chId(x.ch);
+        html += '<label class="ch' + (x.done ? ' done' : '') + '">' +
+          '<input type="checkbox" data-ch="' + esc(k) + '"' + (x.done ? ' checked' : '') + '>' +
+          '<span class="num">' + esc(x.ch.n || '') + '</span>' +
+          '<span class="nm2">' + esc(x.ch.t || '') + '</span>' +
+          (x.min ? '<span class="mn">' + x.min + '′</span>' : '<span class="mn">测验</span>') +
+          (x.ch.u ? '<a href="' + esc(x.ch.u) + '" target="_blank" rel="noopener">打开</a>' : '') +
+          '</label>';
+      });
+      html += '</div></article>';
+    });
+
+    var warn = courses.filter(function (c) { return c.level; });
+    warn.sort(function (a, b) {
+      var av = a.level === 'hot' ? 0 : 1;
+      var bv = b.level === 'hot' ? 0 : 1;
+      if (av !== bv) return av - bv;
+      return b.left - a.left;
+    });
+
+    return { html: html, warn: warn, leftAll: leftAll, daily: model.daily };
+  }
+
+  function renderBand(warn) {
+    if (!warn || !warn.length) { $band.innerHTML = ''; return; }
+    var pick = warn[0];
+    var isHot = pick.level === 'hot';
+    var detail = '还剩 ' + pick.left + ' 分钟，每天 ' + STATE.daily + ' 分钟要 ' + pick.needDays + ' 天' +
+      (pick.daysLeft !== null ? '，而最近的截止只剩 ' + pick.daysLeft + ' 天' : '');
+    var more = warn.length > 1 ? '（另有 ' + (warn.length - 1) + ' 门也紧张）' : '';
+
+    $band.innerHTML = '<div class="band ' + (isHot ? 'hot' : 'warn') + '">' +
+      '<div class="t">' + esc((isHot ? '来不及了：' : '该开始了：') + pick.name) + '</div>' +
+      '<div class="d">' + esc(detail + more) + '</div></div>';
+  }
+
+  function render() {
+    var data = STATE.data;
+    if (!data) return;
+    var now = new Date();
+
+    var w = renderWorks(now);
+    var c = renderChapters(now);
+    STATE.daily = c.daily || dailyMinutes();
+
+    var html = w.html + c.html;
+    if (!w.total && !(data.chapters || []).length) {
+      html = '<div class="empty"><div class="big">✓</div><p>没有未完成的了</p>' +
+             '<p style="font-size:13px">有新的会出现在这里</p></div>';
+    }
+    $list.innerHTML = html;
+    renderBand(c.warn);
+
+    var bits = [];
+    if (w.total) bits.push(w.total + ' 项作业');
+    if (c.leftAll) bits.push(c.leftAll + ' 分钟视频');
+    $cnt.textContent = bits.join(' · ');
+
+    var at = data.at ? new Date(data.at) : null;
+    $at.textContent = at && !isNaN(at) ? '更新于 ' + fmtAt(at) : '已更新';
+    document.title = w.total ? '未完成 ' + w.total : '没有未完成';
+  }
+
   $list.addEventListener('click', function (e) {
-    var t = e.target.closest ? e.target.closest('[data-ignore],[data-restore]') : null;
-    if (!t) return;
-    var ignore = loadIgnore();
-    if (t.hasAttribute('data-ignore')) ignore[t.getAttribute('data-ignore')] = 1;
-    else delete ignore[t.getAttribute('data-restore')];
-    saveIgnore(ignore);
+    var t = e.target;
+    var btn = t.closest ? t.closest('[data-ignore],[data-restore],[data-toggle]') : null;
+    if (!btn) return;
+    if (btn.hasAttribute('data-toggle')) {
+      var name = btn.getAttribute('data-toggle');
+      STATE.open[name] = !STATE.open[name];
+      var card = btn.closest('.cc');
+      if (card) card.classList.toggle('open', !!STATE.open[name]);
+      btn.textContent = STATE.open[name] ? '收起' : '展开';
+      return;
+    }
+    var ignore = loadJSON(LS_IGNORE, {});
+    if (btn.hasAttribute('data-ignore')) ignore[btn.getAttribute('data-ignore')] = 1;
+    else delete ignore[btn.getAttribute('data-restore')];
+    saveJSON(LS_IGNORE, ignore);
     render();
   });
 
-  /* ---------- 提示 / 取数 ---------- */
+  $list.addEventListener('change', function (e) {
+    var t = e.target;
+    if (!t) return;
+    if (t.hasAttribute && t.hasAttribute('data-ch')) {
+      var done = loadJSON(LS_DONE, {});
+      if (t.checked) done[t.getAttribute('data-ch')] = 1;
+      else delete done[t.getAttribute('data-ch')];
+      saveJSON(LS_DONE, done);
+      render();
+      return;
+    }
+    if (t.id === 'daily') {
+      var v = Number(t.value);
+      if (v > 0) {
+        try { localStorage.setItem(LS_DAILY, String(v)); } catch (err) {}
+        render();
+      }
+    }
+  });
+
   function showCard(title, body, withInput) {
     var h = '<div class="card"><h3>' + esc(title) + '</h3><p>' + esc(body) + '</p>';
     if (withInput) {
-      h += '<input id="kin" type="text" inputmode="latin" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="粘贴 43 位密钥">';
+      h += '<input class="kin" id="kin" type="text" inputmode="latin" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="粘贴 43 位密钥">';
       h += '<div class="btn" id="kok">保存并打开</div><div class="err" id="kerr"></div>';
     }
     h += '</div>';
     $list.innerHTML = h;
+    $band.innerHTML = '';
     $cnt.textContent = '';
     $at.textContent = '';
     if (withInput) {
@@ -365,14 +579,12 @@
         if (res.status === 404) throw new Error('服务器上还没有数据，等下一次定时任务跑完就有了');
         throw new Error('取数据失败：HTTP ' + res.status);
       }
-      var text = await res.text();
-      var data = await decrypt(key, text);
-      STATE.data = data;
+      STATE.data = await decrypt(key, await res.text());
       render();
     } catch (e) {
       var msg = (e && e.message) || String(e);
-      if (/operation|decrypt|tag|JSON|格式/i.test(msg) && /密钥|格式/.test(msg) === false && /JSON/.test(msg) === false) {
-        msg = '解不开：密钥和数据对不上。检查一下链接里的 #k= 那段有没有被截断。\n（原始信息：' + msg + '）';
+      if (/operation/i.test(msg)) {
+        msg = '解不开：密钥和数据对不上。检查链接里 #k= 那段有没有被截断。';
       }
       showError(msg);
     }
@@ -380,14 +592,13 @@
 
   document.getElementById('rf').addEventListener('click', load);
 
-  // 从后台切回来时，如果数据超过 10 分钟就悄悄刷一次
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState !== 'visible' || !STATE.data) return;
     var at = STATE.data.at ? new Date(STATE.data.at).getTime() : 0;
     if (Date.now() - at > 10 * 60 * 1000) load();
   });
 
-  $foot.innerHTML = '数据来自学习通 · 每小时自动同步<br>只读，不改动任何课程内容';
+  $foot.innerHTML = '数据来自学习通 · 每小时自动同步<br>章节的「看完」由你自己勾，学生端不给这个字段';
   load();
 })();
 </script>
