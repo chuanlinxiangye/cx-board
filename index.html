@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="未完成">
+<meta name="robots" content="noindex, nofollow">
+<title>未完成的作业</title>
+<style>
+  :root{
+    --bg:#f2f4f7; --card:#fff; --text:#15181d; --muted:#6b7280; --line:#e5e7eb;
+    --accent:#2563eb; --over:#dc2626; --today:#ea580c; --d3:#b45309; --d7:#2563eb; --later:#6b7280;
+    --chip:#f3f4f6; --shadow:0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0d0f13; --card:#171a21; --text:#e8eaf0; --muted:#8f98a8; --line:#242833;
+      --accent:#60a5fa; --over:#f87171; --today:#fb923c; --d3:#fbbf24; --d7:#60a5fa; --later:#94a3b8;
+      --chip:#1e222b; --shadow:0 1px 2px rgba(0,0,0,.4);
+    }
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--text);
+    font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    padding:0 0 env(safe-area-inset-bottom);
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:18px 16px 40px}
+
+  header{padding:8px 2px 14px}
+  .h1{font-size:26px;font-weight:650;letter-spacing:-.02em;margin:0;display:flex;align-items:baseline;gap:8px}
+  .h1 small{font-size:15px;font-weight:400;color:var(--muted)}
+  .bar{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13px;color:var(--muted)}
+  .bar .dot{width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.5}
+  button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+  .refresh{color:var(--accent);font-size:13px;padding:4px 2px;font-weight:500}
+  .refresh:active{opacity:.5}
+
+  h2{
+    font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--muted);
+    margin:22px 2px 8px;display:flex;align-items:center;gap:8px;text-transform:none;
+  }
+  h2 .n{color:var(--muted);font-weight:400}
+  h2::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .item{
+    background:var(--card);border-radius:14px;padding:14px 14px 12px;margin-bottom:10px;
+    box-shadow:var(--shadow);border:1px solid transparent;position:relative;overflow:hidden;
+  }
+  .item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .g-over .item::before{background:var(--over)}
+  .g-today .item::before{background:var(--today)}
+  .g-d3 .item::before{background:var(--d3)}
+  .g-d7 .item::before{background:var(--d7)}
+  .g-later .item::before{background:var(--later)}
+
+  .course{font-size:12px;color:var(--muted);margin:0 0 3px;letter-spacing:.01em}
+  .title{font-size:16px;font-weight:550;line-height:1.4;margin:0;word-break:break-word}
+  .foot{display:flex;align-items:center;gap:10px;margin-top:9px;flex-wrap:wrap}
+  .due{font-size:13px;font-weight:550;font-variant-numeric:tabular-nums}
+  .g-over .due{color:var(--over)} .g-today .due{color:var(--today)}
+  .g-d3 .due{color:var(--d3)} .g-d7 .due{color:var(--d7)} .g-later .due{color:var(--muted)}
+  .foot .sep{flex:1}
+  .go{font-size:13px;color:var(--accent);font-weight:500;text-decoration:none;padding:5px 0}
+  .mute{font-size:12px;color:var(--muted);padding:5px 8px;border-radius:8px;background:var(--chip)}
+  .mute:active{opacity:.6}
+
+  .hidden-sec{margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
+  .hidden-sec summary{font-size:13px;color:var(--muted);cursor:pointer;list-style:none}
+  .hidden-sec summary::-webkit-details-marker{display:none}
+  .hidden-sec summary::before{content:"▸ ";display:inline-block;transition:transform .15s}
+  .hidden-sec[open] summary::before{transform:rotate(90deg)}
+  .hidden-sec .item{opacity:.55;box-shadow:none;background:transparent;border:1px dashed var(--line);margin-top:10px}
+
+  .empty{text-align:center;padding:56px 20px;color:var(--muted)}
+  .empty .big{font-size:40px;line-height:1;margin-bottom:12px;opacity:.5}
+  .empty p{margin:6px 0;font-size:14px}
+
+  .card{background:var(--card);border-radius:14px;padding:20px;box-shadow:var(--shadow);margin-top:16px}
+  .card h3{margin:0 0 10px;font-size:16px}
+  .card p{margin:0 0 12px;font-size:14px;color:var(--muted);line-height:1.6}
+  .card input{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;font-size:14px}
+  .card .btn{margin-top:10px;width:100%;padding:12px;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;font-size:15px}
+  .card .btn:active{opacity:.8}
+  .err{color:var(--over);font-size:13px;margin-top:10px;white-space:pre-wrap;word-break:break-word}
+  footer{margin-top:30px;text-align:center;font-size:12px;color:var(--muted);line-height:1.7}
+  .skel{height:78px;border-radius:14px;background:var(--card);margin-bottom:10px;opacity:.6;animation:sk 1.2s infinite}
+  @keyframes sk{0%,100%{opacity:.45}50%{opacity:.75}}
+  @media (prefers-reduced-motion:reduce){.skel{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="h1">未完成 <small id="cnt"></small></div>
+    <div class="bar">
+      <span id="at">读取中…</span>
+      <span class="dot"></span>
+      <button class="refresh" id="rf">刷新</button>
+    </div>
+  </header>
+  <main id="list">
+    <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+  </main>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var LS_IGNORE = 'cx_ignore_v2';
+  var LS_KEY = 'cx_board_key';
+
+  var $list = document.getElementById('list');
+  var $cnt = document.getElementById('cnt');
+  var $at = document.getElementById('at');
+  var $foot = document.getElementById('foot');
+
+  /* ---------- 密钥 ---------- */
+  function b64urlToBytes(s) {
+    var t = String(s).replace(/-/g, '+').replace(/_/g, '/');
+    while (t.length % 4) t += '=';
+    var bin = atob(t);
+    var out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function b64ToBytes(s) {
+    var bin = atob(String(s).trim());
+    var out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  function readKeyFromHash() {
+    var h = location.hash || '';
+    var m = h.match(/[#&]k=([A-Za-z0-9_-]{20,})/);
+    return m ? m[1] : '';
+  }
+
+  function getKey() {
+    var k = readKeyFromHash();
+    if (k) { try { localStorage.setItem(LS_KEY, k); } catch (e) {} return k; }
+    try { return localStorage.getItem(LS_KEY) || ''; } catch (e) { return ''; }
+  }
+
+  /* ---------- 解密 ---------- */
+  async function decrypt(keyStr, text) {
+    if (!window.crypto || !window.crypto.subtle) {
+      throw new Error('这个页面必须用 https 打开，file:// 本地双击不行');
+    }
+    var keyBytes = b64urlToBytes(keyStr);
+    if (keyBytes.length !== 32) throw new Error('密钥长度不对，应当是 43 个字符');
+    var key = await crypto.subtle.importKey('raw', keyBytes, { name: 'AES-GCM' }, false, ['decrypt']);
+    var parts = String(text).trim().split('.');
+    if (parts.length !== 2) throw new Error('数据文件格式不对');
+    var iv = b64ToBytes(parts[0]);
+    var ct = b64ToBytes(parts[1]);
+    var pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ct);
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+
+  /* ---------- 时间 ---------- */
+  function parseEnd(s) {
+    if (!s) return null;
+    var m = String(s).match(/(\d{4})-(\d{1,2})-(\d{1,2})[ T](\d{1,2}):(\d{2})/);
+    if (!m) return null;
+    return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]);
+  }
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function fmtAt(d) {
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
+      ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+  function remain(end, now) {
+    var ms = end.getTime() - now.getTime();
+    var abs = Math.abs(ms);
+    var day = Math.floor(abs / 86400000);
+    var hr = Math.floor((abs % 86400000) / 3600000);
+    var mi = Math.floor((abs % 3600000) / 60000);
+    if (ms < 0) {
+      if (day > 0) return '逾期 ' + day + ' 天';
+      if (hr > 0) return '逾期 ' + hr + ' 小时';
+      return '逾期 ' + Math.max(mi, 1) + ' 分钟';
+    }
+    if (day > 0) return '剩 ' + day + ' 天' + (hr ? ' ' + hr + ' 小时' : '');
+    if (hr > 0) return '剩 ' + hr + ' 小时 ' + mi + ' 分';
+    return '剩 ' + Math.max(mi, 1) + ' 分钟';
+  }
+  function startOfToday(now) {
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  }
+
+  /* ---------- 忽略清单 ---------- */
+  function loadIgnore() {
+    try { return JSON.parse(localStorage.getItem(LS_IGNORE) || '{}') || {}; } catch (e) { return {}; }
+  }
+  function saveIgnore(o) {
+    try { localStorage.setItem(LS_IGNORE, JSON.stringify(o)); } catch (e) {}
+  }
+  function idOf(w) { return (w.c || '') + '|' + (w.t || ''); }
+
+  /* ---------- 渲染 ---------- */
+  var STATE = { data: null };
+
+  function render() {
+    var data = STATE.data;
+    if (!data) return;
+
+    var now = new Date();
+    var ignore = loadIgnore();
+    var works = (data.works || []).filter(function (w) { return !ignore[idOf(w)]; });
+
+    var groups = [
+      { key: 'over', title: '已经过期', items: [] },
+      { key: 'today', title: '今天截止', items: [] },
+      { key: 'd3', title: '三天内', items: [] },
+      { key: 'd7', title: '一周内', items: [] },
+      { key: 'later', title: '更晚', items: [] },
+      { key: 'nodue', title: '没有标明截止时间', items: [] }
+    ];
+    var t0 = startOfToday(now);
+
+    works.forEach(function (w) {
+      var end = parseEnd(w.e);
+      if (!end) { groups[5].items.push({ w: w, end: null }); return; }
+      var d = end.getTime() - t0;
+      var g;
+      if (end.getTime() < now.getTime()) g = groups[0];
+      else if (d <= 86400000) g = groups[1];
+      else if (d <= 3 * 86400000) g = groups[2];
+      else if (d <= 7 * 86400000) g = groups[3];
+      else g = groups[4];
+      g.items.push({ w: w, end: end });
+    });
+
+    groups.forEach(function (g) {
+      g.items.sort(function (a, b) {
+        if (!a.end) return 1;
+        if (!b.end) return -1;
+        return a.end - b.end;
+      });
+    });
+
+    var html = '';
+    var total = 0;
+    groups.forEach(function (g) {
+      if (!g.items.length) return;
+      total += g.items.length;
+      html += '<h2 class="g-' + g.key + '">' + g.title + ' <span class="n">' + g.items.length + '</span></h2>';
+      html += '<section class="g-' + g.key + '">';
+      g.items.forEach(function (it) { html += itemHtml(it, now); });
+      html += '</section>';
+    });
+
+    if (!total) {
+      html = '<div class="empty"><div class="big">✓</div>' +
+             '<p>没有未完成的了</p>' +
+             '<p style="font-size:13px">有新的会出现在这里</p></div>';
+    }
+
+    // 已标为不计分的
+    var hidden = (data.works || []).filter(function (w) { return ignore[idOf(w)]; });
+    if (hidden.length) {
+      html += '<details class="hidden-sec"><summary>已标为不计分（' + hidden.length + '）</summary>';
+      hidden.forEach(function (w) {
+        html += '<article class="item"><p class="course">' + esc(w.c || '') + '</p>' +
+                '<p class="title">' + esc(w.t || '') + '</p>' +
+                '<div class="foot"><span class="due" style="color:var(--muted)">' + esc(w.e || '无截止') + '</span>' +
+                '<span class="sep"></span><button class="mute" data-restore="' + esc(idOf(w)) + '">恢复</button></div></article>';
+      });
+      html += '</details>';
+    }
+
+    $list.innerHTML = html;
+    $cnt.textContent = total ? total + ' 项' : '';
+
+    var at = data.at ? new Date(data.at) : null;
+    $at.textContent = at && !isNaN(at) ? '更新于 ' + fmtAt(at) : '已更新';
+    document.title = total ? '未完成 ' + total : '没有未完成';
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function itemHtml(it, now) {
+    var w = it.w;
+    var due = it.end ? remain(it.end, now) + '　·　' + w.e : (w.e || '');
+    var id = idOf(w);
+    return '<article class="item">' +
+      '<p class="course">' + esc(w.c || '') + '</p>' +
+      '<p class="title">' + esc(w.t || '') + '</p>' +
+      '<div class="foot">' +
+        '<span class="due">' + esc(due) + '</span>' +
+        '<span class="sep"></span>' +
+        (w.u ? '<a class="go" href="' + esc(w.u) + '" target="_blank" rel="noopener">打开 ›</a>' : '') +
+        '<button class="mute" data-ignore="' + esc(id) + '">不计分</button>' +
+      '</div></article>';
+  }
+
+  $list.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('[data-ignore],[data-restore]') : null;
+    if (!t) return;
+    var ignore = loadIgnore();
+    if (t.hasAttribute('data-ignore')) ignore[t.getAttribute('data-ignore')] = 1;
+    else delete ignore[t.getAttribute('data-restore')];
+    saveIgnore(ignore);
+    render();
+  });
+
+  /* ---------- 提示 / 取数 ---------- */
+  function showCard(title, body, withInput) {
+    var h = '<div class="card"><h3>' + esc(title) + '</h3><p>' + esc(body) + '</p>';
+    if (withInput) {
+      h += '<input id="kin" type="text" inputmode="latin" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="粘贴 43 位密钥">';
+      h += '<div class="btn" id="kok">保存并打开</div><div class="err" id="kerr"></div>';
+    }
+    h += '</div>';
+    $list.innerHTML = h;
+    $cnt.textContent = '';
+    $at.textContent = '';
+    if (withInput) {
+      document.getElementById('kok').addEventListener('click', function () {
+        var v = (document.getElementById('kin').value || '').trim();
+        if (!/^[A-Za-z0-9_-]{40,}$/.test(v)) {
+          document.getElementById('kerr').textContent = '密钥应该是一长串由字母、数字、- 和 _ 组成的字符';
+          return;
+        }
+        try { localStorage.setItem(LS_KEY, v); } catch (e) {}
+        location.hash = 'k=' + v;
+        load();
+      });
+    }
+  }
+
+  function showError(msg) {
+    $list.innerHTML = '<div class="card"><h3>没能打开</h3><p>' + esc(msg) + '</p>' +
+      '<div class="btn" id="retry">重试</div></div>';
+    document.getElementById('retry').addEventListener('click', load);
+  }
+
+  async function load() {
+    var key = getKey();
+    if (!key) {
+      showCard('需要一次密钥', '这个页面的数据是加密的。第一次打开时，把链接里 # 后面的那段一起带上，或者把密钥贴进来。', true);
+      return;
+    }
+
+    $list.innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
+    $at.textContent = '读取中…';
+
+    try {
+      var res = await fetch('./data.enc?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) {
+        if (res.status === 404) throw new Error('服务器上还没有数据，等下一次定时任务跑完就有了');
+        throw new Error('取数据失败：HTTP ' + res.status);
+      }
+      var text = await res.text();
+      var data = await decrypt(key, text);
+      STATE.data = data;
+      render();
+    } catch (e) {
+      var msg = (e && e.message) || String(e);
+      if (/operation|decrypt|tag|JSON|格式/i.test(msg) && /密钥|格式/.test(msg) === false && /JSON/.test(msg) === false) {
+        msg = '解不开：密钥和数据对不上。检查一下链接里的 #k= 那段有没有被截断。\n（原始信息：' + msg + '）';
+      }
+      showError(msg);
+    }
+  }
+
+  document.getElementById('rf').addEventListener('click', load);
+
+  // 从后台切回来时，如果数据超过 10 分钟就悄悄刷一次
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState !== 'visible' || !STATE.data) return;
+    var at = STATE.data.at ? new Date(STATE.data.at).getTime() : 0;
+    if (Date.now() - at > 10 * 60 * 1000) load();
+  });
+
+  $foot.innerHTML = '数据来自学习通 · 每小时自动同步<br>只读，不改动任何课程内容';
+  load();
+})();
+</script>
+</body>
+</html>
